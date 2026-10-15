@@ -155,7 +155,7 @@ export function createApi(db) {
           const id=decodeURIComponent(orderMatch[1]),status=cleanText(body.status,20);
           if(!["New","Preparing","Ready","Paid","Cancelled"].includes(status))return fail(400,"Invalid order status");
           const existing=getOrder(db,id);if(!existing)return fail(404,"Order not found");
-          if(status==="Cancelled")return ok(cancelOrder(db,id));
+          if(status==="Cancelled"){if(existing.status==="Cancelled")return ok(existing);if(existing.status!=="New")return fail(409,"Only new orders can be cancelled");return ok(cancelOrder(db,id));}
           if(existing.status==="Cancelled"||existing.status==="Paid")return fail(409,"A completed or cancelled order cannot change status");
           const transitions={New:["Preparing"],Preparing:["Ready"],Ready:["Paid"]};
           if(!transitions[existing.status]?.includes(status))return fail(409,`Cannot change order from ${existing.status} to ${status}`);

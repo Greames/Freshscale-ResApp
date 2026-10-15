@@ -18,7 +18,7 @@ Freshscale ResApp is an independent restaurant operations platform, built from a
 
 ## Run locally
 
-Requires Node.js 22 or newer, with the built-in `node:sqlite` module.
+Requires Node.js 22.13 or newer, with the built-in `node:sqlite` module.
 
 ```sh
 npm start
