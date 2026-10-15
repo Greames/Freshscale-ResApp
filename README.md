@@ -1,34 +1,57 @@
 # Freshscale ResApp
 
-A clean-build restaurant operations workspace inspired by restaurant ERP workflows, including Odoo's public restaurant feature set. This repository is independent: no existing ResApp source was carried forward.
+Freshscale ResApp is an independent restaurant operations platform, built from a clean codebase and inspired by public restaurant ERP workflows such as Odoo. It does not reuse the old ResApp implementation or Odoo's source code, branding, or assets.
 
-## Prototype scope
-- POS for dine-in, takeaway, and delivery
-- Table map and occupancy
-- Kitchen preparation queue
-- Menu catalogue and recipe-aware stock planning
-- Inventory and low-stock alerts
-- Purchasing, people/shift overview, and sales reports
+## Current build
 
-## Run
-Requires Node.js 22+.
+- Restaurant overview and menu catalogue
+- POS order creation for dine-in, takeaway, and delivery
+- Kitchen ticket workflow: New → Preparing → Ready → Paid
+- Recipe-based ingredient consumption when an order is created
+- Transactional stock validation and rollback if an order needs more ingredients than are available
+- Stock movement ledger with order-linked sale movements and cancellation reversals
+- Ingredient inventory, low-stock alerts, and manual adjustments
+- Purchase order creation and receiving, with receiving protected against duplicate stock additions
+- Staff/shift overview, floor/table mock-up, reports and CSV export
+- SQLite-backed API and responsive browser interface
+- Basic automated API and interface tests plus a GitHub Actions workflow
+
+## Run locally
+
+Requires Node.js 22 or newer, with the built-in `node:sqlite` module.
 
 ```sh
 npm start
 npm test
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000. The default SQLite file is `data/freshscale.sqlite`; set `DB_PATH` to use a different file. For a clean in-memory database in tests, the API supports `:memory:`.
 
-## Important
-This is an interactive browser prototype using demo data in localStorage. It is not production-ready. Server-side persistence, authentication, role/outlet isolation, real payments, GST-compliant invoicing, printer integrations, recipe stock ledger, supplier receiving, and automated end-to-end tests remain to be built and validated before real use.
+## API routes currently available
 
-## Product roadmap
-1. API + relational database and migrations
-2. Authentication, roles, and outlet/franchise tenancy
-3. Transaction-safe orders, payments, and idempotent ingredient deductions
-4. Stock counts, wastage, purchase receiving, and supplier price lists
-5. GST invoices, settlement reconciliation, and accounting exports
-6. Kitchen display/printers, QR ordering, bookings, and delivery integrations
-7. Workforce roster, attendance, leave, checklists, and task automation
-8. Monitoring, backups, security testing, and deployment hardening
+- `GET /api/health`
+- `GET /api/state`
+- `GET, POST /api/menu`
+- `PATCH /api/menu/:id`
+- `GET /api/inventory`
+- `POST /api/inventory/:id/adjust`
+- `GET, POST /api/orders`
+- `PATCH /api/orders/:id/status`
+- `GET, POST /api/purchases`
+- `POST /api/purchases/:id/receive`
+
+## Important limitations
+
+This is an early prototype, not production-ready restaurant software. It currently has no authentication or server-side user/role/outlet isolation. Tax is deliberately not calculated because a production GST configuration must be designed and reviewed rather than guessed. Payment gateways, compliant invoice numbering, receipt printers, reservations, supplier integrations, full recipe editing, multi-outlet/franchise controls, backups and deployment hardening are not complete. Staff and floor/table state are still browser-local demo data.
+
+Before using this for real restaurant transactions, implement and validate secure authentication, access controls, GST rules, payment reconciliation, idempotency keys for client retries, audit trails, migrations/backups, monitoring, and end-to-end tests.
+
+## Roadmap
+
+1. Secure authentication, roles, and outlet/franchise tenancy
+2. Persist tables, staff, shifts, and operations tasks on the server
+3. Configure recipes and inventory units with explicit conversions
+4. GST-ready invoices, refunds, payment reconciliation and accounting exports
+5. Kitchen display/printing, QR ordering, bookings and delivery integrations
+6. Purchase approvals, wastage, stock counts and supplier price lists
+7. Security review, backups, observability and production deployment
