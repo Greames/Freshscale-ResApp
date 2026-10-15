@@ -1,25 +1,34 @@
 # Freshscale ResApp
 
-Freshscale ResApp is an India-focused restaurant ERP for POS, kitchen operations, menu and recipe costing, inventory, purchasing, workforce, finance, GST compliance, and multi-outlet/franchise management.
+A clean-build restaurant operations workspace inspired by restaurant ERP workflows, including Odoo's public restaurant feature set. This repository is independent: no existing ResApp source was carried forward.
 
-This repository is an independent product codebase based on the existing ResApp foundation. The original `Greames/rasoinet` repository will remain unchanged.
+## Prototype scope
+- POS for dine-in, takeaway, and delivery
+- Table map and occupancy
+- Kitchen preparation queue
+- Menu catalogue and recipe-aware stock planning
+- Inventory and low-stock alerts
+- Purchasing, people/shift overview, and sales reports
 
-## Technology
-- Node.js 22.13+
-- Built-in `node:sqlite`
-- No external runtime dependencies
+## Run
+Requires Node.js 22+.
 
-## Run locally
-```bash
+```sh
 npm start
 npm test
 ```
 
-## Product roadmap
-1. POS order lifecycle and kitchen workflow
-2. Recipe-based inventory consumption with idempotent stock movements
-3. Table management, modifiers, combos, refunds and payment reconciliation
-4. Purchasing, workforce and multi-outlet reporting
-5. Security, tests and independent deployment configuration
+Open http://localhost:3000.
 
-Tax and statutory calculations must be reviewed by a qualified professional before production use.
+## Important
+This is an interactive browser prototype using demo data in localStorage. It is not production-ready. Server-side persistence, authentication, role/outlet isolation, real payments, GST-compliant invoicing, printer integrations, recipe stock ledger, supplier receiving, and automated end-to-end tests remain to be built and validated before real use.
+
+## Product roadmap
+1. API + relational database and migrations
+2. Authentication, roles, and outlet/franchise tenancy
+3. Transaction-safe orders, payments, and idempotent ingredient deductions
+4. Stock counts, wastage, purchase receiving, and supplier price lists
+5. GST invoices, settlement reconciliation, and accounting exports
+6. Kitchen display/printers, QR ordering, bookings, and delivery integrations
+7. Workforce roster, attendance, leave, checklists, and task automation
+8. Monitoring, backups, security testing, and deployment hardening
