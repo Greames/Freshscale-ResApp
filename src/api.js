@@ -21,7 +21,7 @@ function requireFields(body, fields) {
 // Business date in India Standard Time (UTC+5:30).
 const istToday = () => iso(new Date(Date.now() + 330 * 60000));
 
-function createApi(db, { today = istToday, brand = process.env.BRAND || 'Spice Route' } = {}) {
+function createApi(db, { today = istToday, brand = process.env.BRAND || 'Freshscale ResApp' } = {}) {
   const q = (sql) => db.prepare(sql);
   const outletFilter = (outlet, alias = '') => (outlet && outlet !== 'all' ? { sql: ` AND ${alias}outlet_id = ${Number(outlet)}`, one: Number(outlet) } : { sql: '', one: null });
 
