@@ -59,6 +59,18 @@ export function openDatabase(filename = process.env.DB_PATH || "./data/freshscal
   seedIfEmpty(db);
   return db;
 }
+function withTransaction(db, fn) {
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const result = fn();
+    db.exec("COMMIT");
+    return result;
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+}
+
 function seedIfEmpty(db) {
   if (db.prepare("SELECT COUNT(*) AS n FROM menu_items").get().n) return;
   const menu = [
@@ -82,7 +94,7 @@ function seedIfEmpty(db) {
   const insertMenu = db.prepare("INSERT INTO menu_items(id,name,category,price,emoji,description) VALUES(?,?,?,?,?,?)");
   const insertIngredient = db.prepare("INSERT INTO ingredients(id,name,unit,quantity,minimum_quantity,unit_cost) VALUES(?,?,?,?,?,?)");
   const insertRecipe = db.prepare("INSERT INTO recipes(menu_item_id,ingredient_id,quantity) VALUES(?,?,?)");
-  db.transaction(() => { for (const row of menu) insertMenu.run(...row); for (const row of ingredients) insertIngredient.run(...row); for (const row of recipes) insertRecipe.run(...row); })();
+  withTransaction(db, () => { for (const row of menu) insertMenu.run(...row); for (const row of ingredients) insertIngredient.run(...row); for (const row of recipes) insertRecipe.run(...row); });
 }
 export function resetDatabase(db) {
   db.exec("DELETE FROM purchase_items; DELETE FROM purchase_orders; DELETE FROM stock_movements; DELETE FROM order_items; DELETE FROM orders; DELETE FROM recipes; DELETE FROM ingredients; DELETE FROM menu_items;");
